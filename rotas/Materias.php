@@ -1,26 +1,35 @@
 <?php
-/*CABEÇALHO DO HTTP*/
-hender("Content-Type: application/json; charset=UTF-8");
-hender("Access-Control-Allow-Origin: *");
-hender("Access-control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-/*
-Essa variavel recebe o metoso utilizado pode ser POST, GET ou DELETE
-*/
-$metodoSolicitado = $_SERVER['RESQUET_METHOD']
-/*
-Esse id é quando colocamos informações na URL
-*/
-$id = $_GET ['id'] ?? null;
-/*
-?? significa que $_GET['id'] existir e não for nulo
-o conteudo entra na variavel id
-*/
-switch($metodoSolicitado)
-{
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS");
+ 
+$metodoSolicitado = $_SERVER['REQUEST_METHOD'];
+$id = $_GET['id'] ?? NULL;
+ 
+switch($metodoSolicitado){
     case "POST":
         $dados_recebidos = json_decode(file_get_contents("php://input"), true);
         break;
-        case "GET":
-            echo "Veio do navegador";
-            break;
+    case "GET":
+        $servidor = "localhost";
+        $usuario = "root";
+        $senha = "";
+        $banco = "aula_pw3";
+ 
+        $conexao = new mysqli($servidor, $usuario, $senha, $banco);
+ 
+        $sql = "select * from materias";
+ 
+        $resultado = $conexao->query($sql);
+ 
+        $materias = [];
+        while($linha = $resultado->fetch_assoc()){
+            $materias[]=$linha;
+        }
+ 
+        echo json_encode($materias);
+        break;    
 }
+ 
+ 
+?>
